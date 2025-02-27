@@ -1,6 +1,23 @@
-# ECR pull-trhough cache implementation
+# ECR pull-through cache implementation
 
-## You can find information about this module in my blog https://sirantd.com/
+Starting from April 1, 2025 Docker Hub introduces new rate limits
+
+This was made to create ECR pull-through cache for other registries (both public and private) and can be used to:
+
+- caching public and private images in your private ECR registry
+- speedup pulling from private ECR to your local services (ECS, EKS, Lambdas, etc.)
+- define lifecycle policy to keep only the required number of the latest tags
+- security scanning of images during pull
+- a single place to update your token in case of rotation or expiration (e.g. Gitlab do not allow you to create tokens with an expiration date longer than one year). Just imagine you need to go through all your credentials in all K8s clusters one per year to update tokens.
+
+```sh
+# direct pull from Docker Hub
+docker pull timberio/vector:0.45.0-alpine
+# pull through ECR
+docker pull 123456789012.dkr.ecr.us-east-1.amazonaws.com/dockerhub/timberio/vector:0.45.0-alpine
+```
+
+More details about this module in <a name="blog post"></a> [blog post](https://sirantd.com/aws-and-docker-hub-limits-smart-strategies-for-april-2025-changes-42bd9295cad6)
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements

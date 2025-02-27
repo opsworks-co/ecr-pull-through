@@ -3,9 +3,11 @@ locals {
   registries = tomap({
     for k, v in yamldecode(file("secrets.dec.yaml")) :
     k => {
-      registry    = v.registry
-      username    = v.username
-      accessToken = v.accessToken
+      registry                    = v.registry
+      username                    = try(v.username, null)
+      accessToken                 = try(v.accessToken, null)
+      repository_read_access_arns = try(v.repository_read_access_arns, [])
+      image_tag_mutability        = try(v.image_tag_mutability, "MUTABLE")
     }
   })
 }

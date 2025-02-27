@@ -37,15 +37,18 @@ module "pull_through_cache_repository_template" {
   # Pull through cache rule
   create_pull_through_cache_rule = true
   upstream_registry_url          = each.value.registry
-  credential_arn                 = module.secrets_manager_credentials[each.key].secret_arn
+  credential_arn                 = contains(keys(module.secrets_manager_credentials), each.key) ? module.secrets_manager_credentials[each.key].secret_arn : null
 
   tags = var.tags
 }
 
 module "secrets_manager_credentials" {
-  for_each = var.registries
-  source   = "terraform-aws-modules/secrets-manager/aws"
-  version  = "1.3.1"
+  for_each = {
+    for key, registry in var.registries : key => registry
+    if registry.username != null && registry.accessToken != null
+  }
+  source  = "terraform-aws-modules/secrets-manager/aws"
+  version = "1.3.1"
 
   # Secret names must contain 1-512 Unicode characters and be prefixed with ecr-pullthroughcache/
   name_prefix = "ecr-pullthroughcache/${each.key}"

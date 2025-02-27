@@ -2,4 +2,4 @@
 
 ## You can find information about this module in my blog https://sirantd.com/
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->

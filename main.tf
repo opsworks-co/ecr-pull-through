@@ -17,6 +17,8 @@ module "pull_through_cache_repository_template" {
   prefix        = each.key
   resource_tags = var.tags
 
+  repository_read_access_arns = lookup(each.value, "repository_read_access_arns", [])
+
   lifecycle_policy = jsonencode({
     rules = [
       {

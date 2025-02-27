@@ -7,9 +7,11 @@ variable "region" {
 variable "registries" {
   description = "List of registries to create rules for"
   type = map(object({
-    registry    = string
-    username    = optional(string)
-    accessToken = optional(string)
+    registry                    = string
+    username                    = optional(string)
+    accessToken                 = optional(string)
+    repository_read_access_arns = optional(list(string))
+    image_tag_mutability        = optional(string)
   }))
 
   validation {

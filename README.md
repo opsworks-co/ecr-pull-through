@@ -35,7 +35,7 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_region"></a> [region](#input\_region) | AWS region where we are creating rules | `string` | `""` | no |
-| <a name="input_registries"></a> [registries](#input\_registries) | List of registries to create rules for | <pre>map(object({<br/>    registry    = string<br/>    username    = optional(string)<br/>    accessToken = optional(string)<br/>  }))</pre> | n/a | yes |
+| <a name="input_registries"></a> [registries](#input\_registries) | List of registries to create rules for | <pre>map(object({<br/>    registry                    = string<br/>    username                    = optional(string)<br/>    accessToken                 = optional(string)<br/>    repository_read_access_arns = optional(list(string))<br/>    image_tag_mutability        = optional(string)<br/>  }))</pre> | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags that will be assigned to all resources | `map(string)` | `{}` | no |
 
 ## Outputs

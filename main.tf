@@ -17,6 +17,9 @@ module "pull_through_cache_repository_template" {
   prefix        = each.key
   resource_tags = var.tags
 
+  repository_read_access_arns = lookup(each.value, "repository_read_access_arns", [])
+  image_tag_mutability        = lookup(each.value, "image_tag_mutability", "IMMUTABLE")
+
   lifecycle_policy = jsonencode({
     rules = [
       {

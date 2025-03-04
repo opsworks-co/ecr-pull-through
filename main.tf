@@ -17,10 +17,11 @@ locals {
       }
     ]
   }
-  repository_read_access_arns = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+  repository_read_access_arns = ["arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:root"]
 }
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
+data "aws_partition" "current" {}
 
 module "pull_through_cache_repository_template" {
   for_each = var.registries
@@ -54,11 +55,9 @@ module "secrets_manager_credentials" {
   source  = "terraform-aws-modules/secrets-manager/aws"
   version = "1.3.1"
 
-  # Secret names must contain 1-512 Unicode characters and be prefixed with ecr-pullthroughcache/
   name_prefix = "ecr-pullthroughcache/${each.key}"
   description = "${each.key} credentials"
 
-  # For example only
   recovery_window_in_days = 0
   secret_string = jsonencode({
     username    = each.value.username
@@ -73,7 +72,7 @@ module "secrets_manager_credentials" {
       sid = "AllowAccountRead"
       principals = [{
         type        = "AWS"
-        identifiers = ["arn:aws:iam::${local.account_id}:root"]
+        identifiers = ["arn:${data.aws_partition.current.partition}:iam::${local.account_id}:root"]
       }]
       actions   = ["secretsmanager:GetSecretValue"]
       resources = ["*"]

@@ -11,7 +11,7 @@ variable "registries" {
     username                    = optional(string)
     accessToken                 = optional(string)
     repository_read_access_arns = optional(list(string))
-    image_tag_mutability        = optional(string, "MUTABLE")
+    image_tag_mutability        = optional(string)
     lifecycle_policy = optional(object({
       rules = list(object({
         rulePriority = number

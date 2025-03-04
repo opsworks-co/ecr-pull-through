@@ -17,6 +17,20 @@ docker pull timberio/vector:0.45.0-alpine
 docker pull 123456789012.dkr.ecr.us-east-1.amazonaws.com/dockerhub/timberio/vector:0.45.0-alpine
 ```
 
+If in YAML not specified `lifecycle_policy` module applies following default lifecycle policy to each created template:
+```
+lifecycle_policy:
+    rules:
+        - rulePriority: 1
+            description: "Keep last 3 images"
+            selection:
+            tagStatus: "any"
+            countType: "imageCountMoreThan"
+            countNumber: 3
+            action:
+            type: "expire"
+```
+
 More details about this module in <a name="blog post"></a> [blog post](https://sirantd.com/aws-and-docker-hub-limits-smart-strategies-for-april-2025-changes-42bd9295cad6)
 
 <!-- BEGIN_TF_DOCS -->
@@ -52,7 +66,7 @@ More details about this module in <a name="blog post"></a> [blog post](https://s
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_region"></a> [region](#input\_region) | AWS region where we are creating rules | `string` | `""` | no |
-| <a name="input_registries"></a> [registries](#input\_registries) | List of registries to create rules for | <pre>map(object({<br/>    registry                    = string<br/>    username                    = optional(string)<br/>    accessToken                 = optional(string)<br/>    repository_read_access_arns = optional(list(string))<br/>    image_tag_mutability        = optional(string)<br/>  }))</pre> | n/a | yes |
+| <a name="input_registries"></a> [registries](#input\_registries) | List of registries to create rules for | <pre>map(object({<br/>    registry                    = string<br/>    username                    = optional(string)<br/>    accessToken                 = optional(string)<br/>    repository_read_access_arns = optional(list(string))<br/>    image_tag_mutability        = optional(string, "MUTABLE")<br/>    lifecycle_policy = optional(object({<br/>      rules = list(object({<br/>        rulePriority = number<br/>        description  = string<br/>        selection = object({<br/>          tagStatus   = string<br/>          countType   = string<br/>          countNumber = number<br/>        })<br/>        action = object({<br/>          type = string<br/>        })<br/>      }))<br/>    }))<br/>  }))</pre> | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags that will be assigned to all resources | `map(string)` | `{}` | no |
 
 ## Outputs

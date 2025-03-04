@@ -45,7 +45,7 @@ More details about this module in <a name="blog post"></a> [blog post](https://s
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.88.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.89.0 |
 
 ## Modules
 

@@ -12,6 +12,20 @@ variable "registries" {
     accessToken                 = optional(string)
     repository_read_access_arns = optional(list(string))
     image_tag_mutability        = optional(string)
+    lifecycle_policy = optional(object({
+      rules = list(object({
+        rulePriority = number
+        description  = string
+        selection = object({
+          tagStatus   = string
+          countType   = string
+          countNumber = number
+        })
+        action = object({
+          type = string
+        })
+      }))
+    }))
   }))
 
   validation {

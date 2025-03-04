@@ -1,8 +1,24 @@
 locals {
   account_id = data.aws_caller_identity.current.account_id
   region     = var.region != "" ? var.region : data.aws_region.current.name
+  default_lifecycle_policy = {
+    rules = [
+      {
+        rulePriority = 1
+        description  = "Keep last 3 images"
+        selection = {
+          tagStatus   = "any"
+          countType   = "imageCountMoreThan"
+          countNumber = 3
+        }
+        action = {
+          type = "expire"
+        }
+      }
+    ]
+  }
+  repository_read_access_arns = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
 }
-
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
@@ -17,25 +33,10 @@ module "pull_through_cache_repository_template" {
   prefix        = each.key
   resource_tags = var.tags
 
-  repository_read_access_arns = lookup(each.value, "repository_read_access_arns", [])
-  image_tag_mutability        = lookup(each.value, "image_tag_mutability", "IMMUTABLE")
+  repository_read_access_arns = concat(coalesce(lookup(each.value, "repository_read_access_arns", []), []), local.repository_read_access_arns)
+  image_tag_mutability        = coalesce(lookup(each.value, "image_tag_mutability", "MUTABLE"), "MUTABLE")
 
-  lifecycle_policy = jsonencode({
-    rules = [
-      {
-        rulePriority = 1,
-        description  = "Keep last 3 images",
-        selection = {
-          tagStatus   = "any",
-          countType   = "imageCountMoreThan",
-          countNumber = 3
-        },
-        action = {
-          type = "expire"
-        }
-      }
-    ]
-  })
+  lifecycle_policy = jsonencode(coalesce(lookup(each.value, "lifecycle_policy", local.default_lifecycle_policy), local.default_lifecycle_policy))
 
   # Pull through cache rule
   create_pull_through_cache_rule = true

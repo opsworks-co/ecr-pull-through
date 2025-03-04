@@ -17,6 +17,7 @@ locals {
       }
     ]
   }
+  repository_read_access_arns = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
 }
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
@@ -32,7 +33,7 @@ module "pull_through_cache_repository_template" {
   prefix        = each.key
   resource_tags = var.tags
 
-  repository_read_access_arns = coalesce(lookup(each.value, "repository_read_access_arns", []), [])
+  repository_read_access_arns = concat(coalesce(lookup(each.value, "repository_read_access_arns", []), []), local.repository_read_access_arns)
   image_tag_mutability        = coalesce(lookup(each.value, "image_tag_mutability", "MUTABLE"), "MUTABLE")
 
   lifecycle_policy = jsonencode(coalesce(lookup(each.value, "lifecycle_policy", local.default_lifecycle_policy), local.default_lifecycle_policy))

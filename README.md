@@ -1,5 +1,7 @@
 # ECR pull-through cache implementation
 
+## This repository is discontinued, further work at https://github.com/Perun-Engineering/ecr-pull-through
+
 Starting from April 1, 2025 Docker Hub introduces new rate limits
 
 This was made to create ECR pull-through cache for other registries (both public and private) and can be used to:
